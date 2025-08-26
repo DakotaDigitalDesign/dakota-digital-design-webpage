@@ -46,9 +46,7 @@ const Navigation = () => {
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <div className="flex items-center gap-3">
-            <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
-              <span className="text-white font-bold text-lg">D</span>
-            </div>
+            <img src="/lovable-uploads/cb8e6f4d-163d-4940-9973-3d90d13ccf5c.png" alt="Dakota Digital Design" className="h-8 w-8" />
             <span className="text-xl font-bold text-foreground">Dakota Digital Design</span>
           </div>
 

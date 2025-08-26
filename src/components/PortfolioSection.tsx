@@ -144,10 +144,10 @@ const PortfolioSection = () => {
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center pt-4">
                 <Button variant="outline-white" size="lg" className="shadow-button">
-                  Get Your Free Quote Today
+                  Get Your Free Website Today
                 </Button>
                 <Button variant="outline-white" size="lg">
-                  Call (701) 555-0123
+                  Call (701) 840-9830
                 </Button>
               </div>
             </div>

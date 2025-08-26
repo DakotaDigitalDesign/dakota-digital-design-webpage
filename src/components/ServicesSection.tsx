@@ -103,10 +103,10 @@ const ServicesSection = () => {
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <Button variant="cta" size="lg" className="shadow-button">
-                  Get Your Free Quote
+                  Get Your Free Website
                 </Button>
                 <Button variant="outline" size="lg">
-                  Call (701) 555-0123
+                  Call (701) 840-9830
                 </Button>
               </div>
             </div>

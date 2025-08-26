@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import { Phone, Mail, MapPin, Clock } from "lucide-react";
+import { Phone, Mail, MapPin } from "lucide-react";
 
 const ContactSection = () => {
   return (
@@ -30,7 +30,7 @@ const ContactSection = () => {
                 </div>
                 <div>
                   <h3 className="font-semibold text-foreground mb-1">Call Us</h3>
-                  <p className="text-muted-foreground">(701) 555-0123</p>
+                  <p className="text-muted-foreground">(701) 840-9830</p>
                   <p className="text-sm text-muted-foreground">Free consultation available</p>
                 </div>
               </div>
@@ -41,7 +41,7 @@ const ContactSection = () => {
                 </div>
                 <div>
                   <h3 className="font-semibold text-foreground mb-1">Email Us</h3>
-                  <p className="text-muted-foreground">hello@dakotadigital.design</p>
+                  <p className="text-muted-foreground">dakotadesigndigital@gmail.com</p>
                   <p className="text-sm text-muted-foreground">We respond within 2 hours</p>
                 </div>
               </div>
@@ -57,16 +57,6 @@ const ContactSection = () => {
                 </div>
               </div>
 
-              <div className="flex items-start gap-4">
-                <div className="w-12 h-12 bg-primary rounded-xl flex items-center justify-center flex-shrink-0">
-                  <Clock className="w-6 h-6 text-primary-foreground" />
-                </div>
-                <div>
-                  <h3 className="font-semibold text-foreground mb-1">Business Hours</h3>
-                  <p className="text-muted-foreground">Mon - Fri: 8AM - 6PM CST</p>
-                  <p className="text-sm text-muted-foreground">Emergency support available</p>
-                </div>
-              </div>
             </div>
 
             {/* Trust Indicators */}
@@ -88,7 +78,15 @@ const ContactSection = () => {
                   </div>
                   <div className="flex items-center gap-3">
                     <div className="w-2 h-2 bg-success rounded-full"></div>
-                    <span className="text-sm text-muted-foreground">Free consultation & quote</span>
+                    <span className="text-sm text-muted-foreground">Free consultation & website</span>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <div className="w-2 h-2 bg-success rounded-full"></div>
+                    <span className="text-sm text-muted-foreground">Domain & hosting included</span>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <div className="w-2 h-2 bg-success rounded-full"></div>
+                    <span className="text-sm text-muted-foreground">Security & updates handled</span>
                   </div>
                 </div>
               </div>
@@ -99,8 +97,8 @@ const ContactSection = () => {
           <Card className="gradient-card shadow-hero border-0 p-8">
             <form className="space-y-6">
               <div className="text-center mb-8">
-                <h3 className="text-2xl font-bold text-card-foreground mb-2">Get Your Free Quote</h3>
-                <p className="text-muted-foreground">Tell us about your project and we'll send you a detailed proposal.</p>
+                <h3 className="text-2xl font-bold text-card-foreground mb-2">Get Your Free Website</h3>
+                <p className="text-muted-foreground">Tell us about your project and we'll build your website for free.</p>
               </div>
 
               <div className="grid md:grid-cols-2 gap-4">
@@ -117,7 +115,7 @@ const ContactSection = () => {
               <div className="grid md:grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor="phone">Phone</Label>
-                  <Input id="phone" placeholder="(701) 555-0123" />
+                  <Input id="phone" placeholder="(701) 840-9830" />
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="business">Business Name</Label>
@@ -151,11 +149,11 @@ const ContactSection = () => {
               </div>
 
               <Button type="submit" variant="cta" size="lg" className="w-full shadow-button">
-                Get My Free Quote & Consultation
+                Get My Free Website & Consultation
               </Button>
 
               <div className="text-center text-sm text-muted-foreground">
-                📞 Prefer to talk? Call us at <a href="tel:7015550123" className="text-primary hover:underline">(701) 555-0123</a>
+                📞 Prefer to talk? Call us at <a href="tel:7018409830" className="text-primary hover:underline">(701) 840-9830</a>
               </div>
             </form>
           </Card>

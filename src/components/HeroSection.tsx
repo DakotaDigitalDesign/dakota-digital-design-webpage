@@ -1,15 +1,40 @@
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { ArrowRight, CheckCircle } from "lucide-react";
-import heroImage from "@/assets/hero-image.jpg";
+import { useHeroData } from "@/hooks/useWordPress";
+import LoadingSpinner from "./LoadingSpinner";
+import ErrorFallback from "./ErrorBoundary";
+import heroImageFallback from "@/assets/hero-image.jpg";
 
 const HeroSection = () => {
+  const { data: heroData, isLoading, error, refetch } = useHeroData();
+
+  if (isLoading) {
+    return (
+      <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-16">
+        <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-background"></div>
+        <div className="relative z-10 flex flex-col items-center gap-4">
+          <LoadingSpinner size="lg" />
+          <p className="text-muted-foreground">Loading content...</p>
+        </div>
+      </section>
+    );
+  }
+
+  if (error) {
+    return <ErrorFallback error={error} onRetry={() => refetch()} />;
+  }
+
+  if (!heroData) return null;
+
+  const backgroundImage = heroData.hero_image?.url || heroImageFallback;
+
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-16">
       {/* Background with overlay */}
       <div 
         className="absolute inset-0 bg-cover bg-center bg-no-repeat"
-        style={{ backgroundImage: `url(${heroImage})` }}
+        style={{ backgroundImage: `url(${backgroundImage})` }}
       >
         <div className="absolute inset-0 gradient-hero opacity-90"></div>
       </div>
@@ -21,15 +46,14 @@ const HeroSection = () => {
           <div className="text-white space-y-8 animate-fade-in">
             <div className="space-y-4">
               <div className="inline-flex items-center bg-white/20 backdrop-blur-sm rounded-full px-4 py-2 text-sm font-medium text-white">
-                🌾 Serving North Dakota Businesses
+                🌾 {heroData.subheadline}
               </div>
-              <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight">
-                Get More Local <span className="text-accent">Customers</span> with a 
-                <span className="text-accent"> Professional Website</span>
-              </h1>
+              <h1 
+                className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight"
+                dangerouslySetInnerHTML={{ __html: heroData.headline }}
+              />
               <p className="text-xl text-white/90 leading-relaxed max-w-2xl">
-                Dakota Digital Design builds websites that convert visitors into customers for North Dakota businesses. 
-                No tech headaches, just results that grow your business.
+                {heroData.description}
               </p>
             </div>
             
@@ -38,15 +62,15 @@ const HeroSection = () => {
               <div className="flex flex-wrap gap-4">
                 <div className="flex items-center gap-2 text-white/90">
                   <CheckCircle className="w-5 h-5 text-accent" />
-                  <span>Valley City Based</span>
+                  <span>{heroData.trust_indicator_1}</span>
                 </div>
                 <div className="flex items-center gap-2 text-white/90">
                   <CheckCircle className="w-5 h-5 text-accent" />
-                  <span>Local Expertise</span>
+                  <span>{heroData.trust_indicator_2}</span>
                 </div>
                 <div className="flex items-center gap-2 text-white/90">
                   <CheckCircle className="w-5 h-5 text-accent" />
-                  <span>Fast Results</span>
+                  <span>{heroData.trust_indicator_3}</span>
                 </div>
               </div>
             </div>
@@ -54,22 +78,22 @@ const HeroSection = () => {
             {/* CTA Buttons */}
             <div className="flex flex-col sm:flex-row gap-4">
               <Button variant="cta" size="lg" className="group shadow-button">
-                Get Your Free Website
+                {heroData.cta_primary_text}
                 <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
               </Button>
               <Button variant="outline-white" size="lg">
-                See Our Work
+                {heroData.cta_secondary_text}
               </Button>
             </div>
             
             {/* Social Proof */}
             <div className="pt-4">
-              <p className="text-white/80 text-sm mb-3">Trusted by 50+ North Dakota businesses</p>
+              <p className="text-white/80 text-sm mb-3">{heroData.social_proof_text}</p>
               <div className="flex items-center gap-1">
                 {[...Array(5)].map((_, i) => (
                   <div key={i} className="w-5 h-5 text-accent">⭐</div>
                 ))}
-                <span className="ml-2 text-white/90 font-medium">4.9/5 Client Rating</span>
+                <span className="ml-2 text-white/90 font-medium">{heroData.client_rating}/5 Client Rating</span>
               </div>
             </div>
           </div>
@@ -83,25 +107,19 @@ const HeroSection = () => {
                 </div>
                 <div>
                   <h3 className="text-2xl font-bold text-card-foreground mb-2">
-                    Ready to Launch?
+                    {heroData.hero_card_title}
                   </h3>
                   <p className="text-muted-foreground">
-                    Get your professional website designed and launched in just 7 days.
+                    {heroData.hero_card_description}
                   </p>
                 </div>
                 <div className="space-y-3">
-                  <div className="flex items-center gap-2 text-sm">
-                    <CheckCircle className="w-4 h-4 text-success" />
-                    <span>Mobile-Optimized Design</span>
-                  </div>
-                  <div className="flex items-center gap-2 text-sm">
-                    <CheckCircle className="w-4 h-4 text-success" />
-                    <span>SEO Ready</span>
-                  </div>
-                  <div className="flex items-center gap-2 text-sm">
-                    <CheckCircle className="w-4 h-4 text-success" />
-                    <span>Lead Generation Focus</span>
-                  </div>
+                  {heroData.hero_card_features.map((feature, index) => (
+                    <div key={index} className="flex items-center gap-2 text-sm">
+                      <CheckCircle className="w-4 h-4 text-success" />
+                      <span>{feature}</span>
+                    </div>
+                  ))}
                 </div>
                 <Button variant="primary" className="w-full">
                   Start Your Project

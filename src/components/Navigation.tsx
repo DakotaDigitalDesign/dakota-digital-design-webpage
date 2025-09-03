@@ -1,8 +1,10 @@
 import { useState, useEffect } from "react";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useSiteSettings } from "@/hooks/useWordPress";
 
 const Navigation = () => {
   const [activeSection, setActiveSection] = useState("home");
+  const { data: siteSettings } = useSiteSettings();
 
   const sections = [
     { id: "home", label: "Home" },
@@ -46,8 +48,14 @@ const Navigation = () => {
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <div className="flex items-center gap-3">
-            <img src="/lovable-uploads/cb8e6f4d-163d-4940-9973-3d90d13ccf5c.png" alt="Dakota Digital Design" className="h-8 w-8" />
-            <span className="text-xl font-bold text-foreground">Dakota Digital Design</span>
+            <img 
+              src={siteSettings?.logo?.url || "/lovable-uploads/cb8e6f4d-163d-4940-9973-3d90d13ccf5c.png"} 
+              alt={siteSettings?.logo?.alt || "Dakota Digital Design"} 
+              className="h-8 w-8" 
+            />
+            <span className="text-xl font-bold text-foreground">
+              {siteSettings?.site_title || "Dakota Digital Design"}
+            </span>
           </div>
 
           {/* Navigation Tabs */}

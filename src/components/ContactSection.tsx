@@ -4,8 +4,87 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Phone, Mail, MapPin } from "lucide-react";
+import { useContactData, useContactForm } from "@/hooks/useWordPress";
+import LoadingSpinner from "./LoadingSpinner";
+import ErrorFallback from "./ErrorBoundary";
+import { toast } from "@/hooks/use-toast";
+import { useState } from "react";
+import type { ContactFormData } from "@/types/wordpress";
 
 const ContactSection = () => {
+  const { data: contactData, isLoading, error, refetch } = useContactData();
+  const contactFormMutation = useContactForm();
+  const [formData, setFormData] = useState<ContactFormData>({
+    name: '',
+    email: '',
+    phone: '',
+    business: '',
+    website: '',
+    project: '',
+    timeline: ''
+  });
+
+  if (isLoading) {
+    return (
+      <section className="py-24 bg-muted/30">
+        <div className="container mx-auto px-6 lg:px-8">
+          <div className="flex justify-center items-center min-h-96">
+            <div className="flex flex-col items-center gap-4">
+              <LoadingSpinner size="lg" />
+              <p className="text-muted-foreground">Loading contact information...</p>
+            </div>
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  if (error) {
+    return <ErrorFallback error={error} onRetry={() => refetch()} />;
+  }
+
+  if (!contactData) return null;
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+    const { id, value } = e.target;
+    setFormData(prev => ({ ...prev, [id]: value }));
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    try {
+      const result = await contactFormMutation.mutateAsync(formData);
+      
+      if (result.status === 'success') {
+        toast({
+          title: "Message Sent!",
+          description: "Thank you for your inquiry. We'll get back to you within 2 hours.",
+          variant: "default"
+        });
+        
+        // Reset form
+        setFormData({
+          name: '',
+          email: '',
+          phone: '',
+          business: '',
+          website: '',
+          project: '',
+          timeline: ''
+        });
+      } else {
+        throw new Error(result.message);
+      }
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: error instanceof Error ? error.message : "Failed to send message. Please try again.",
+        variant: "destructive"
+      });
+    }
+  };
+
   return (
     <section className="py-24 bg-muted/30">
       <div className="container mx-auto px-6 lg:px-8">
@@ -13,12 +92,12 @@ const ContactSection = () => {
           {/* Contact Information */}
           <div className="space-y-8">
             <div className="space-y-4">
-              <h2 className="text-3xl md:text-4xl font-bold text-foreground">
-                Let's Grow Your <span className="text-primary">North Dakota</span> Business
-              </h2>
+              <h2 
+                className="text-3xl md:text-4xl font-bold text-foreground"
+                dangerouslySetInnerHTML={{ __html: contactData.section_title }}
+              />
               <p className="text-xl text-muted-foreground leading-relaxed">
-                Ready to get more customers with a professional website? 
-                Let's discuss your project and see how we can help your business thrive.
+                {contactData.section_description}
               </p>
             </div>
 
@@ -30,8 +109,8 @@ const ContactSection = () => {
                 </div>
                 <div>
                   <h3 className="font-semibold text-foreground mb-1">Call Us</h3>
-                  <p className="text-muted-foreground">(701) 840-9830</p>
-                  <p className="text-sm text-muted-foreground">Free consultation available</p>
+                  <p className="text-muted-foreground">{contactData.contact_info.phone}</p>
+                  <p className="text-sm text-muted-foreground">{contactData.contact_info.phone_description}</p>
                 </div>
               </div>
 
@@ -41,8 +120,8 @@ const ContactSection = () => {
                 </div>
                 <div>
                   <h3 className="font-semibold text-foreground mb-1">Email Us</h3>
-                  <p className="text-muted-foreground">dakotadesigndigital@gmail.com</p>
-                  <p className="text-sm text-muted-foreground">We respond within 2 hours</p>
+                  <p className="text-muted-foreground">{contactData.contact_info.email}</p>
+                  <p className="text-sm text-muted-foreground">{contactData.contact_info.email_description}</p>
                 </div>
               </div>
 
@@ -52,8 +131,8 @@ const ContactSection = () => {
                 </div>
                 <div>
                   <h3 className="font-semibold text-foreground mb-1">Location</h3>
-                  <p className="text-muted-foreground">Valley City, North Dakota</p>
-                  <p className="text-sm text-muted-foreground">Serving all of ND remotely</p>
+                  <p className="text-muted-foreground">{contactData.contact_info.location}</p>
+                  <p className="text-sm text-muted-foreground">{contactData.contact_info.location_description}</p>
                 </div>
               </div>
 
@@ -64,30 +143,12 @@ const ContactSection = () => {
               <div className="space-y-4">
                 <h3 className="text-lg font-bold text-card-foreground">Why Choose Dakota Digital Design?</h3>
                 <div className="space-y-3">
-                  <div className="flex items-center gap-3">
-                    <div className="w-2 h-2 bg-success rounded-full"></div>
-                    <span className="text-sm text-muted-foreground">Local North Dakota expertise</span>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <div className="w-2 h-2 bg-success rounded-full"></div>
-                    <span className="text-sm text-muted-foreground">7-day website launch guarantee</span>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <div className="w-2 h-2 bg-success rounded-full"></div>
-                    <span className="text-sm text-muted-foreground">50+ satisfied ND businesses</span>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <div className="w-2 h-2 bg-success rounded-full"></div>
-                    <span className="text-sm text-muted-foreground">Free consultation & website</span>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <div className="w-2 h-2 bg-success rounded-full"></div>
-                    <span className="text-sm text-muted-foreground">Domain & hosting included</span>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <div className="w-2 h-2 bg-success rounded-full"></div>
-                    <span className="text-sm text-muted-foreground">Security & updates handled</span>
-                  </div>
+                  {contactData.trust_indicators.map((indicator, index) => (
+                    <div key={index} className="flex items-center gap-3">
+                      <div className="w-2 h-2 bg-success rounded-full"></div>
+                      <span className="text-sm text-muted-foreground">{indicator}</span>
+                    </div>
+                  ))}
                 </div>
               </div>
             </Card>
@@ -95,37 +156,65 @@ const ContactSection = () => {
 
           {/* Contact Form */}
           <Card className="gradient-card shadow-hero border-0 p-8">
-            <form className="space-y-6">
+            <form onSubmit={handleSubmit} className="space-y-6">
               <div className="text-center mb-8">
-                <h3 className="text-2xl font-bold text-card-foreground mb-2">Get Your Free Website</h3>
-                <p className="text-muted-foreground">Tell us about your project and we'll build your website for free.</p>
+                <h3 className="text-2xl font-bold text-card-foreground mb-2">{contactData.form_title}</h3>
+                <p className="text-muted-foreground">{contactData.form_description}</p>
               </div>
 
               <div className="grid md:grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor="name">Full Name *</Label>
-                  <Input id="name" placeholder="John Smith" required />
+                  <Input 
+                    id="name" 
+                    placeholder="John Smith" 
+                    required 
+                    value={formData.name}
+                    onChange={handleInputChange}
+                  />
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="email">Email *</Label>
-                  <Input id="email" type="email" placeholder="john@business.com" required />
+                  <Input 
+                    id="email" 
+                    type="email" 
+                    placeholder="john@business.com" 
+                    required 
+                    value={formData.email}
+                    onChange={handleInputChange}
+                  />
                 </div>
               </div>
 
               <div className="grid md:grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor="phone">Phone</Label>
-                  <Input id="phone" placeholder="(701) 840-9830" />
+                  <Input 
+                    id="phone" 
+                    placeholder="(701) 840-9830"
+                    value={formData.phone}
+                    onChange={handleInputChange}
+                  />
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="business">Business Name</Label>
-                  <Input id="business" placeholder="Your Business Name" />
+                  <Input 
+                    id="business" 
+                    placeholder="Your Business Name"
+                    value={formData.business}
+                    onChange={handleInputChange}
+                  />
                 </div>
               </div>
 
               <div className="space-y-2">
                 <Label htmlFor="website">Current Website (if any)</Label>
-                <Input id="website" placeholder="https://yourwebsite.com" />
+                <Input 
+                  id="website" 
+                  placeholder="https://yourwebsite.com"
+                  value={formData.website}
+                  onChange={handleInputChange}
+                />
               </div>
 
               <div className="space-y-2">
@@ -135,25 +224,46 @@ const ContactSection = () => {
                   placeholder="Describe what you need: new website, redesign, more customers, better online presence, etc."
                   className="min-h-32"
                   required
+                  value={formData.project}
+                  onChange={handleInputChange}
                 />
               </div>
 
               <div className="space-y-2">
                 <Label htmlFor="timeline">When do you need this completed?</Label>
-                <select className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50">
-                  <option>ASAP (Rush job)</option>
-                  <option>Within 2 weeks</option>
-                  <option>Within a month</option>
-                  <option>No specific deadline</option>
+                <select 
+                  id="timeline"
+                  className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                  value={formData.timeline}
+                  onChange={handleInputChange}
+                >
+                  <option value="">Select timeline</option>
+                  <option value="ASAP (Rush job)">ASAP (Rush job)</option>
+                  <option value="Within 2 weeks">Within 2 weeks</option>
+                  <option value="Within a month">Within a month</option>
+                  <option value="No specific deadline">No specific deadline</option>
                 </select>
               </div>
 
-              <Button type="submit" variant="cta" size="lg" className="w-full shadow-button">
-                Get My Free Website & Consultation
+              <Button 
+                type="submit" 
+                variant="cta" 
+                size="lg" 
+                className="w-full shadow-button"
+                disabled={contactFormMutation.isPending}
+              >
+                {contactFormMutation.isPending ? (
+                  <>
+                    <LoadingSpinner size="sm" className="mr-2" />
+                    Sending...
+                  </>
+                ) : (
+                  'Get My Free Website & Consultation'
+                )}
               </Button>
 
               <div className="text-center text-sm text-muted-foreground">
-                📞 Prefer to talk? Call us at <a href="tel:7018409830" className="text-primary hover:underline">(701) 840-9830</a>
+                📞 Prefer to talk? Call us at <a href={`tel:${contactData.contact_info.phone.replace(/\D/g, '')}`} className="text-primary hover:underline">{contactData.contact_info.phone}</a>
               </div>
             </form>
           </Card>

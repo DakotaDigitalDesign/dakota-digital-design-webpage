@@ -1,7 +1,10 @@
 import { Button } from "@/components/ui/button";
 import { Phone, Mail, MapPin, Facebook, Linkedin, Globe } from "lucide-react";
+import { useSiteSettings } from "@/hooks/useWordPress";
 
 const Footer = () => {
+  const { data: siteSettings } = useSiteSettings();
+
   return (
     <footer className="bg-foreground text-white">
       <div className="container mx-auto px-6 lg:px-8">
@@ -10,10 +13,11 @@ const Footer = () => {
           {/* Company Info */}
           <div className="space-y-6">
             <div>
-              <h3 className="text-2xl font-bold mb-2">Dakota Digital Design</h3>
+              <h3 className="text-2xl font-bold mb-2">
+                {siteSettings?.site_title || "Dakota Digital Design"}
+              </h3>
               <p className="text-white/80 leading-relaxed">
-                Professional websites for North Dakota businesses. 
-                We help local companies attract more customers and grow online.
+                {siteSettings?.site_description || "Professional websites for North Dakota businesses. We help local companies attract more customers and grow online."}
               </p>
             </div>
             
@@ -24,11 +28,11 @@ const Footer = () => {
               </div>
               <div className="flex items-center gap-3">
                 <Phone className="w-5 h-5 text-accent" />
-                <span className="text-white/90">(701) 840-9830</span>
+                <span className="text-white/90">{siteSettings?.contact_phone || "(701) 840-9830"}</span>
               </div>
               <div className="flex items-center gap-3">
                 <Mail className="w-5 h-5 text-accent" />
-                <span className="text-white/90">dakotadesigndigital@gmail.com</span>
+                <span className="text-white/90">{siteSettings?.contact_email || "dakotadesigndigital@gmail.com"}</span>
               </div>
             </div>
           </div>
